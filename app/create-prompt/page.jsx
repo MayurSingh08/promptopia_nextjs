@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Form from '/components/Form'
+import { randomInt } from "crypto";
 
 const CreatePrompt = () => {
   const router = useRouter();
@@ -17,18 +18,27 @@ const CreatePrompt = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("/api/prompt/new", {
-        method: "POST",
-        body: JSON.stringify({
-          prompt: post.prompt,
-          userId: session?.user.id,
-          tag: post.tag,
-        }),
-      });
-
-      if (response.ok) {
-        router.push("/");
+      debugger;
+      console.log("Session Data", session)
+      if(session != null){
+        const response = await fetch("/api/prompt/new", {
+          method: "POST",
+          body: JSON.stringify({
+            prompt: post.prompt,
+            userId: session.user.id,
+            //userId: session?.user.id,
+            tag: post.tag,
+          }),
+        });
+  
+        if (response.ok) {
+          router.push("/");
+        }
       }
+      else{
+        alert("Please SignIn to Create Post");
+      }
+      
     } catch (error) {
       console.log(error);
     } finally {
